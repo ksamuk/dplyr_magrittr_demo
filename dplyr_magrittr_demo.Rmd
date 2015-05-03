@@ -89,7 +89,7 @@ gm %>%
 
 ```{r}
 
-people.names <- 1:5 %>% {rep("Darwin",.)}
+# insert join stuff here
 
 ```
 
