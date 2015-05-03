@@ -41,6 +41,9 @@ gapminder %>% lm(lifeExp ~ gdpPercap, data = .) %>% summary
 gapminder %>% lm(lifeExp ~ gdpPercap, data = .) %>% anova
 gapminder %>% lm(lifeExp ~ gdpPercap + continent + country + pop, data=.) %>% drop1
 
+# we can also assign the output of a pipe like so:
+gm.mod <- gapminder %>% lm(lifeExp ~ log(gdpPercap), data = .)
+visreg(gm.mod)
 
 ```
 
@@ -60,7 +63,7 @@ f <- function(x){
 
 # what if we need to make each "step" a bit more complex? 
 # could define a function outside, but can also do it "in line"
-# i.e. lamba expressions
+# i.e. lambda expressions
 
  rnorm(100) %>% 
   abs() %>% {
