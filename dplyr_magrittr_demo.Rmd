@@ -1,13 +1,9 @@
-# magrittr/dplyr demo
-# Andrew MacDonald & Kieran Samuk, May 06 2015
+## magrittr/dplyr demo
+## Andrew MacDonald & Kieran Samuk, May 06 2015
 
 # Part 1: magrittr basics
-
-# install libraries
 install.packages("magrittr")
 install.packages("dplyr")
-
-# optional
 install.packages("ggplot2")
 install.packages("visreg")
 
@@ -48,11 +44,19 @@ gapminder %>% lm(lifeExp ~ gdpPercap + continent + country + pop, data=.) %>% dr
 
 ```
 
-# Part 2: Extended magrittr
+# Part 2: magrittr extended
 
 ```{r}
-# pass arbitrary numbers of args 
-list(x = rnorm(100), y = runif(100))  %>% with(cor(x, y))
+
+# define "functional sequences""
+funct <- . %>% abs() %>% sqrt() %>% hist()
+rnorm(100) %>% funct
+
+# same as
+f <- function(x){
+  # my god, its full of parentheses!
+  hist(sqrt(abs(x)))
+}
 
 # what if we need to make each "step" a bit more complex? 
 # could define a function outside, but can also do it "in line"
@@ -66,19 +70,15 @@ list(x = rnorm(100), y = runif(100))  %>% with(cor(x, y))
   } %>%
   hist
 
-# define "functional sequences""
-funct <- . %>% abs() %>% sqrt() %>% hist()
-rnorm(100) %>% funct
+# pass arbitrary numbers of args 
+list(x = rnorm(100), y = runif(100)) %>% with(cor(x, y))
 
-# same as
-f <- function(x){
-  # my god, its full of parentheses!
-  hist(sqrt(abs(x)))
-}
+# short form is the %$% ("exposition"") operator
+list(x = rnorm(100), y = runif(100)) %$% cor(x, y)
 
 # what if we want to pipe through a function with no return value (e.g. a plot?), but continue the pipe?
 # can use the "tee" operator %T>%
-# creates a "branch"
+# creates a "branch" in the pipe
 
 rnorm(100) %>%
   abs() %T>%
@@ -98,7 +98,6 @@ plot.model <- . %T>%
   summary()
 
 list(x = rnorm(100), y = rnorm(100)) %>% plot.model
-  
 
 ```
 
@@ -169,7 +168,7 @@ gm %>%
 
 ```
 
-# Part 4: Extended dplyr
+# Part 4: dplyr extended
 
 ```{r}
 
