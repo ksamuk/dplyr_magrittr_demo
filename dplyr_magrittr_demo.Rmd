@@ -1,27 +1,36 @@
 # magrittr dplyr demo
 # am & ks 2015
 
-# Part 1: ceci n'est pas une pipe
+# Part 1: magrittr basics
+
+# install libraries
+install.packages("magrittr")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("visreg")
 
 ```{r}
-# libraries
+# load libraries
 library("magrittr")
 library("gapminder")
 library("dplyr")
 library("visreg")
 
 # basic pipe usage
-# find more examples
-rnorm(100,1) %>% mean()
+# output of pipe is (by default) passed to *first* argument of target function
+rnorm(n=100, mean=1)
+rnorm(100, 1) %>% mean()
+rnorm(100, 1) %>% hist()
 
-# wow such pipe
+# even more piping action (rnorm defaults to mean = 0)
 100 %>% rnorm %>% mean
 
-# pipe with other args specified
-100 %>% rnorm(.,10) %>% mean
+# what if we want to pipe in elsewhere in the function?
+# use "."
+10 %>% rnorm(n=100, mean=.) %>% mean
 
 # pipe a dataframe and subset it
-gapminder %>% subset(.,country=="Zambia") 
+gapminder %>% subset(country=="Zambia") 
 
 # what will this do?
 gapminder %>% lapply(class)
@@ -30,72 +39,85 @@ gapminder %>% lapply(class)
 gapminder %>% lm(lifeExp~gdpPercap,data=.)
 gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% summary
 gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% anova
-gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% drop1
+gapminder %>% lm(lifeExp~gdpPercap+continent+country+pop,data=.) %>% drop1
 
-# assiging pipe to a variable
-gm.mod <- gapminder %>% lm(lifeExp~log(gdpPercap),data=.)
-visreg(gm.mod)
-
-# pass arbitrary numbers of args
-list(x = rnorm(100), y = runif(100)) %>% with(cor(x, y))
-
-# 
 
 ```
 
-# Part 2: dplyr verbs
+# Part 2: Extended magrittr
+
+```{r}
+# pass arbitrary numbers of args 
+
+# method 1
+list(x = rnorm(100), y = runif(100)) %>% with(cor(x, y))
+
+# method 2
+
+# define "functional sequences""
+f <- . %>% abs() %>% sqrt()
+rnorm(100) %>% f
+f(rnorm(100))
+
+
+
+```
+
+# Part 3: dplyr basics
 
 ```{r}
 
-# learn what exactly tbl_df does
+# create a data frame tbl (not usually necessary)
 gm <- gapminder %>% tbl_df 
 
+# tbl_dfs can be easily converted back to datafames
+gm %>% data.frame() %>% head()
+
+# arrage dataframe by a variable
 gm %>% arrange(year)
 
+# select columns of a dataframe
 gm %>% select(year, country, continent)
 
-gm %>% mutate(pop.mil = pop/1000000)
+# create a new column 
+gm %>% mutate(pop.thou = pop/1000)
+gm %>% mutate(pop.thou = pop/1000, pop.mil = pop/1000000)
 
-gm %>% filter(country=="Zambia")
+# filter rows by some criteria
+gm %>% filter(country == "Zambia")
+gm %>% filter(country == "Zambia", year < 1977)
 
+# create a grouped tbl_df ("grouped_df")
 gm %>% 
-  group_by(country) 
+  group_by(country)
 
-
+# apply a function to the groups (e.g. summarise)
 gm %>% 
   group_by(country) %>%
   summarize(mean_life = mean(lifeExp))
 
+# multiple groups can be specified
 gm %>% 
   group_by(continent, country) 
 
+# functions are applied from last to first specified
 gm %>% 
   group_by(continent, country) %>%
   summarize(mean_life = mean(lifeExp)) 
 
+# after the last function is applied, a tbl_df (no groups) is returned
 gm %>% 
   group_by(continent, country) %>%
   summarize(mean_life = mean(lifeExp)) %>%
   summarize(mean_contient_life = mean(mean_life))
 
-
+# tally: count observations in groups
 gm %>% 
   group_by(continent, country) %>%
   tally %>%
+  tally
 
-```
-
-# Part 3: additional dplyr functions
-
-```{r}
-
-# insert join stuff here
-
-```
-
-# Part 4: complete chain
-
-```{r}
+# example of a complete chain
 
 library(ggplot2)
 
@@ -105,9 +127,20 @@ gm %>%
   ggplot(aes(x = year, y = meanlife, colour = continent)) + 
     geom_point() + 
     geom_line()
+
 ```
 
+# Part 4: Extended dplyr
 
+```{r}
+
+# insert join stuff here
+
+# identify outliers of some kind
+
+
+
+```
 
 
 
