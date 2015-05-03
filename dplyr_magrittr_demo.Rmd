@@ -1,0 +1,99 @@
+# magrittr dplyr thingy
+
+# magrittr in general
+
+```{r}
+library("magrittr")
+library("gapminder")
+library("dplyr")
+library("visreg")
+
+
+# basic pipe usage
+# find more examples
+rnorm(100,1) %>% mean()
+
+100 %>% rnorm %>% mean
+
+100 %>% rnorm(.,10) %>% mean
+
+
+#100 %>% rnorm(.,10) %>% l(x ~ c(mean(x), sd(x)))
+
+gapminder %>% subset(.,country=="Zambia") 
+
+gapminder %>% lapply(class)
+
+gapminder %>% lm(lifeExp~gdpPercap,data=.)
+gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% summary
+gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% anova
+gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% drop1
+#gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% visreg(fit = .)
+
+```
+
+# dplyr verbs
+
+```{r}
+
+# learn what exactly tbl_df does
+gm <- gapminder %>% tbl_df 
+
+gm %>% arrange(year)
+
+gm %>% select(year, country, continent)
+
+gm %>% mutate(pop.mil = pop/1000000)
+
+gm %>% filter(country=="Zambia")
+
+gm %>% 
+  group_by(country) 
+
+
+gm %>% 
+  group_by(country) %>%
+  summarize(mean_life = mean(lifeExp))
+
+gm %>% 
+  group_by(continent, country) 
+
+gm %>% 
+  group_by(continent, country) %>%
+  summarize(mean_life = mean(lifeExp)) 
+
+gm %>% 
+  group_by(continent, country) %>%
+  summarize(mean_life = mean(lifeExp)) %>%
+  summarize(mean_contient_life = mean(mean_life))
+
+
+gm %>% 
+  group_by(continent, country) %>%
+  tally %>%
+  tally
+  
+
+
+
+
+```
+
+
+### complete chain
+
+```{r}
+
+library(ggplot2)
+
+gm %>% 
+  group_by(continent, year) %>%
+  summarize(meanlife = mean(lifeExp)) %>%
+  ggplot(aes(x = year, y = meanlife, colour = continent)) + 
+    geom_point() + 
+    geom_line()
+```
+
+
+
+
