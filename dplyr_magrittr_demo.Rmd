@@ -1,7 +1,7 @@
-## magrittr/dplyr demo
+# magrittr/dplyr demo
 ## Andrew MacDonald & Kieran Samuk, May 06 2015
 
-# Part 1: magrittr basics
+### Part 1: magrittr basics
 install.packages("magrittr")
 install.packages("dplyr")
 install.packages("ggplot2")
@@ -44,7 +44,7 @@ gapminder %>% lm(lifeExp ~ gdpPercap + continent + country + pop, data=.) %>% dr
 
 ```
 
-# Part 2: magrittr extended
+### Part 2: magrittr extended
 
 ```{r}
 
@@ -101,7 +101,7 @@ list(x = rnorm(100), y = rnorm(100)) %>% plot.model
 
 ```
 
-# Part 3: dplyr basics
+### Part 3: dplyr basics
 
 ```{r}
 
@@ -168,7 +168,7 @@ gm %>%
 
 ```
 
-# Part 4: dplyr extended
+### Part 4: dplyr extended
 
 ```{r}
 
