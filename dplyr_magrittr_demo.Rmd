@@ -1,11 +1,13 @@
-# magrittr dplyr demo
-# am & ks 2015
+# magrittr/dplyr demo
+# Andrew MacDonald & Kieran Samuk, May 06 2015
 
 # Part 1: magrittr basics
 
 # install libraries
 install.packages("magrittr")
 install.packages("dplyr")
+
+# optional
 install.packages("ggplot2")
 install.packages("visreg")
 
@@ -18,28 +20,30 @@ library("visreg")
 
 # basic pipe usage
 # output of pipe is (by default) passed to *first* argument of target function
-rnorm(n=100, mean=1)
+rnorm(n = 100, mean = 1)
 rnorm(100, 1) %>% mean()
 rnorm(100, 1) %>% hist()
 
 # even more piping action (rnorm defaults to mean = 0)
 100 %>% rnorm %>% mean
 
+100 %>% rnorm %>% abs %>% mean
+
 # what if we want to pipe in elsewhere in the function?
 # use "."
-10 %>% rnorm(n=100, mean=.) %>% mean
+10 %>% rnorm(n = 100, mean = .) %>% mean
 
 # pipe a dataframe and subset it
-gapminder %>% subset(country=="Zambia") 
+gapminder %>% subset(country == "Zambia") 
 
 # what will this do?
 gapminder %>% lapply(class)
 
 # pipin hot linear models
-gapminder %>% lm(lifeExp~gdpPercap,data=.)
-gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% summary
-gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% anova
-gapminder %>% lm(lifeExp~gdpPercap+continent+country+pop,data=.) %>% drop1
+gapminder %>% lm(lifeExp ~ gdpPercap, data = .)
+gapminder %>% lm(lifeExp ~ gdpPercap, data = .) %>% summary
+gapminder %>% lm(lifeExp ~ gdpPercap, data = .) %>% anova
+gapminder %>% lm(lifeExp ~ gdpPercap + continent + country + pop, data=.) %>% drop1
 
 
 ```
@@ -48,18 +52,53 @@ gapminder %>% lm(lifeExp~gdpPercap+continent+country+pop,data=.) %>% drop1
 
 ```{r}
 # pass arbitrary numbers of args 
+list(x = rnorm(100), y = runif(100))  %>% with(cor(x, y))
 
-# method 1
-list(x = rnorm(100), y = runif(100)) %>% with(cor(x, y))
+# what if we need to make each "step" a bit more complex? 
+# could define a function outside, but can also do it "in line"
+# i.e. lamba expressions
 
-# method 2
+ rnorm(100) %>% 
+  abs() %>% {
+  x <- sqrt(.)
+  y <- exp(.)
+  x * y
+  } %>%
+  hist
 
 # define "functional sequences""
-f <- . %>% abs() %>% sqrt()
-rnorm(100) %>% f
-f(rnorm(100))
+funct <- . %>% abs() %>% sqrt() %>% hist()
+rnorm(100) %>% funct
 
+# same as
+f <- function(x){
+  # my god, its full of parentheses!
+  hist(sqrt(abs(x)))
+}
 
+# what if we want to pipe through a function with no return value (e.g. a plot?), but continue the pipe?
+# can use the "tee" operator %T>%
+# creates a "branch"
+
+rnorm(100) %>%
+  abs() %T>%
+  hist() %>%
+  log()
+
+list(x = rnorm(100), y = rnorm(100)) %T>% 
+  with(plot(x, y)) %>%
+  with(lm(y ~ x)) %T>% 
+  abline() %>% 
+  summary()
+
+plot.model <- . %T>% 
+  with(plot(x, y)) %>%
+  with(lm(y ~ x)) %T>% 
+  abline() %>% 
+  summary()
+
+list(x = rnorm(100), y = rnorm(100)) %>% plot.model
+  
 
 ```
 
