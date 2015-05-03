@@ -1,7 +1,7 @@
 # magrittr dplyr demo
 # am & ks 2015
 
-# Part 1: c'est ne pas une pipe
+# Part 1: ceci n'est pas une pipe
 
 ```{r}
 # libraries
@@ -36,12 +36,14 @@ gapminder %>% lm(lifeExp~gdpPercap,data=.) %>% drop1
 gm.mod <- gapminder %>% lm(lifeExp~log(gdpPercap),data=.)
 visreg(gm.mod)
 
+# pass arbitrary numbers of args
+list(x = rnorm(100), y = runif(100)) %>% with(cor(x, y))
+
+# 
 
 ```
 
-
-
-# dplyr verbs
+# Part 2: dplyr verbs
 
 ```{r}
 
@@ -80,15 +82,18 @@ gm %>%
 gm %>% 
   group_by(continent, country) %>%
   tally %>%
-  tally
-  
-
-
-
 
 ```
 
-# complete chain
+# Part 3: additional dplyr functions
+
+```{r}
+
+people.names <- 1:5 %>% {rep("Darwin",.)}
+
+```
+
+# Part 4: complete chain
 
 ```{r}
 
