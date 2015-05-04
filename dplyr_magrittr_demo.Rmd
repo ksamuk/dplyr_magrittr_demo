@@ -1,8 +1,9 @@
-# magrittr/dplyr demo
-## Andrew MacDonald & Kieran Samuk, May 06 2015
+## magrittr/dplyr demo
+### Andrew MacDonald & Kieran Samuk, May 06 2015
 
 ### Part 1: magrittr basics
 install.packages("magrittr")
+install.packages("gapminder")
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("visreg")
@@ -14,22 +15,32 @@ library("gapminder")
 library("dplyr")
 library("visreg")
 
+# recall function rnorm
+rnorm(n = 100, mean = 0)
+
 # basic pipe usage
 # output of pipe is (by default) passed to *first* argument of target function
-rnorm(n = 100, mean = 1)
-rnorm(100, 1) %>% mean()
-rnorm(100, 1) %>% hist()
+rnorm(100) %>% mean
+rnorm(100) %>% hist
 
-# even more piping action (rnorm defaults to mean = 0)
+#this includes when arguments other than the first are explicitly defined, e.g.
+100 %>% rnorm(mean = 10) %>% hist
+
+# can pipe to as many functions as you like
 100 %>% rnorm %>% mean
+100 %>% rnorm %>% abs %>% sqrt %>% mean
 
-100 %>% rnorm %>% abs %>% mean
+#compare to parenthesis mess below
+mean(sqrt(abs(rnorm(100))))
 
-# what if we want to pipe in elsewhere in the function?
+#another example
+letters %>% toupper %>% rev %>% paste0 (collapse = "") 
+
+# what if we want to pipe in places other than the first argument?
 # use "."
 10 %>% rnorm(n = 100, mean = .) %>% mean
 
-# pipe a dataframe and subset it
+# pipe a dataframe to subset 
 gapminder %>% subset(country == "Zambia") 
 
 # what will this do?
@@ -52,12 +63,11 @@ visreg(gm.mod)
 ```{r}
 
 # define "functional sequences""
-funct <- . %>% abs() %>% sqrt() %>% hist()
+funct <- . %>% abs %>% sqrt %>% hist
 rnorm(100) %>% funct
 
 # same as
 f <- function(x){
-  # my god, its full of parentheses!
   hist(sqrt(abs(x)))
 }
 
@@ -84,21 +94,21 @@ list(x = rnorm(100), y = runif(100)) %$% cor(x, y)
 # creates a "branch" in the pipe
 
 rnorm(100) %>%
-  abs() %T>%
-  hist() %>%
-  log()
+  abs %T>%
+  hist %>%
+  log
 
 list(x = rnorm(100), y = rnorm(100)) %T>% 
   with(plot(x, y)) %>%
   with(lm(y ~ x)) %T>% 
-  abline() %>% 
-  summary()
+  abline %>% 
+  summary
 
 plot.model <- . %T>% 
   with(plot(x, y)) %>%
   with(lm(y ~ x)) %T>% 
-  abline() %>% 
-  summary()
+  abline %>% 
+  summary
 
 list(x = rnorm(100), y = rnorm(100)) %>% plot.model
 
@@ -159,7 +169,6 @@ gm %>%
   tally
 
 # example of a complete chain
-
 library(ggplot2)
 
 gm %>% 
@@ -177,7 +186,7 @@ gm %>%
 
 # insert join stuff here
 
-# identify outliers of some kind
+# identify outliers of some kind?
 
 
 
