@@ -1,5 +1,11 @@
-# magrittr/dplyr demo
-## Andrew MacDonald & Kieran Samuk, May 06 2015
+---
+title: "magrittr/dplyr demo"
+author: "Andrew and Kieran"
+date: "May 5, 2015"
+output: 
+  html_document:
+      keep_md: yes
+---
 
 ### Part 1: magrittr basics
 install.packages("magrittr")
