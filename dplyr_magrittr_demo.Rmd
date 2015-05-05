@@ -20,6 +20,7 @@ install.packages("visreg")
 library("magrittr")
 library("gapminder")
 library("dplyr")
+library("ggplot2")
 library("visreg")
 
 # recall function rnorm
@@ -192,6 +193,7 @@ gm %>%
 ```{r}
 
 # insert join stuff here
+
 
 # identify outliers of some kind?
 
