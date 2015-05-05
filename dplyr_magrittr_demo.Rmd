@@ -16,6 +16,8 @@ install.packages("ggplot2")
 install.packages("visreg")
 
 ```{r}
+#### KIERAN
+
 # load libraries
 library("magrittr")
 library("gapminder")
@@ -44,6 +46,8 @@ mean(sqrt(abs(rnorm(100))))
 #another example
 letters %>% toupper %>% rev %>% paste0 (collapse = "") 
 
+#### ANDREW 
+
 # what if we want to pipe in places other than the first argument?
 # use "."
 10 %>% rnorm(n = 100, mean = .) %>% mean
@@ -70,9 +74,15 @@ visreg(gm.mod)
 
 ```{r}
 
+#### KIERAN
+
 # define "functional sequences""
 funct <- . %>% abs %>% sqrt %>% hist
 rnorm(100) %>% funct
+
+list.o.stuff <- replicate(5, rnorm(30), simplify = FALSE)
+
+lapply(list.o.stuff, funct)
 
 # same as
 f <- function(x){
@@ -126,6 +136,8 @@ list(x = rnorm(100), y = rnorm(100)) %>% plot.model
 
 ```{r}
 
+#### ANDREW
+
 # create a data frame tbl (not usually necessary)
 gm <- gapminder %>% tbl_df 
 
@@ -176,6 +188,8 @@ gm %>%
   tally %>%
   tally
 
+### KIERAN
+
 # example of a complete chain
 library(ggplot2)
 
@@ -192,6 +206,8 @@ gm %>%
 
 ```{r}
 
+### KIERAN
+
 ## let's make some fake data
 pirates <- gm %>% 
   select(continent, country) %>% 
@@ -199,8 +215,12 @@ pirates <- gm %>%
   rowwise %>%
   mutate(number_of_pirates = rpois(1, lambda = 42))
 
+pirates
+
 ## join to the original
 gm_pirates <- left_join(gm, pirates)
+
+gm_pirates
 
 ## this also works if there are missing values:
 
@@ -212,21 +232,14 @@ some_pirates <- pirates %>%
 some_pirates %>% 
   left_join(gm, .)
 
-
-# insert join stuff here
-
-
-# identify outliers of some kind?
-
-
-
 ```
 
 
 
 ## do lets you perform any arbitrary calculations
 ```{r}
-## 
+#### ANDREW 
+
 model_pirates <- gm_pirates %>% 
   group_by(country) %>% 
   do(model = lm(lifeExp ~ year, data = .))
