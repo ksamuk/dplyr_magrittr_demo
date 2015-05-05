@@ -192,6 +192,27 @@ gm %>%
 
 ```{r}
 
+## let's make some fake data
+pirates <- gm %>% 
+  select(continent, country) %>% 
+  distinct %>% 
+  rowwise %>%
+  mutate(number_of_pirates = rpois(1, lambda = 42))
+
+## join to the original
+gm_pirates <- left_join(gm, pirates)
+
+## this also works if there are missing values:
+
+some_pirates <- pirates %>% 
+  sample_frac(0.6,) 
+
+# dim, unique, blah blah
+
+some_pirates %>% 
+  left_join(gm, .)
+
+
 # insert join stuff here
 
 
@@ -202,4 +223,54 @@ gm %>%
 ```
 
 
+
+## do lets you perform any arbitrary calculations
+```{r}
+## 
+model_pirates <- gm_pirates %>% 
+  group_by(country) %>% 
+  do(model = lm(lifeExp ~ year, data = .))
+
+## in a list
+model_pirates$model[1]
+
+## a model
+model_pirates$model[[1]]
+
+model_pirates %>% 
+  mutate(rsq = summary(model)$r.squared)
+
+
+get_rsq <- function(df){
+  mod <- lm(lifeExp ~ year, data = df)
+  rsq <- summary(mod)$r.squared
+  data.frame(Rval = rsq)
+}
+
+gm_pirates %>% 
+  group_by(country) %>% 
+  do(get_rsq(df = .))
+
+
+```
+
+
+```{r}
+
+is.out <- . %>% {
+  quant <- . %>% 
+  quantile(
+    na.rm = TRUE,
+    probs = 0.95) %>% 
+  extract2(1)
+ 
+  test <- . %>% 
+    is_greater_than(quant)
+  
+  .[test(.)]
+    
+}
+
+is.out(rnorm(30))
+```
 
