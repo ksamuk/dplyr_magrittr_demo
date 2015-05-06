@@ -46,11 +46,11 @@ mean(sqrt(abs(rnorm(100))))
 #another example
 letters %>% toupper %>% rev %>% paste0 (collapse = "") 
 
-#### ANDREW 
-
 # what if we want to pipe in places other than the first argument?
 # use "."
 10 %>% rnorm(n = 100, mean = .) %>% mean
+
+#### ANDREW 
 
 # pipe a dataframe to subset 
 gapminder %>% subset(country == "Zambia") 
