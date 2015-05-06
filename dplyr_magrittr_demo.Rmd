@@ -55,7 +55,7 @@ letters %>% toupper %>% rev %>% paste0 (collapse = "")
 # pipe a dataframe to subset 
 gapminder %>% subset(country == "Zambia") 
 
-# what will this do?
+# pipe to lapply
 gapminder %>% lapply(class)
 
 # pipin hot linear models
