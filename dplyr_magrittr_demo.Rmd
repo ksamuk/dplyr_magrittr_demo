@@ -77,22 +77,21 @@ visreg(gm.mod)
 #### KIERAN
 
 # define "functional sequences""
-funct <- . %>% abs %>% sqrt %>% hist
+funct <- . %>% abs %>% sqrt %>% mean()
 rnorm(100) %>% funct
 
-list.o.stuff <- replicate(5, rnorm(30), simplify = FALSE)
-
-lapply(list.o.stuff, funct)
+# can use these as you would use any function e.g. with lapply
+rnorm.list <- replicate(5, rnorm(30), simplify = FALSE)
+lapply(rnorm.list, funct)
 
 # same as
 f <- function(x){
-  hist(sqrt(abs(x)))
+  mean(sqrt(abs(x)))
 }
 
-# what if we need to make each "step" a bit more complex? 
+# what if we need to make each step a bit more complex? 
 # could define a function outside, but can also do it "in line"
 # i.e. lambda expressions
-
  rnorm(100) %>% 
   abs() %>% {
   x <- sqrt(.)
@@ -101,10 +100,11 @@ f <- function(x){
   } %>%
   hist
 
-# pass arbitrary numbers of args 
+# what if we want to pass more than one arg?
+# can use "with"
 list(x = rnorm(100), y = runif(100)) %>% with(cor(x, y))
 
-# short form is the %$% ("exposition"") operator
+# or, short form is the %$% ("exposition") operator
 list(x = rnorm(100), y = runif(100)) %$% cor(x, y)
 
 # what if we want to pipe through a function with no return value (e.g. a plot?), but continue the pipe?
@@ -264,6 +264,28 @@ gm_pirates %>%
   group_by(country) %>% 
   do(get_rsq(df = .))
 
+
+```
+
+
+```{r}
+# won't knit for some reason
+
+# is.out <- . %>% {
+#   quant <- . %>% 
+#   quantile(
+#     na.rm = TRUE,
+#     probs = 0.95) %>% 
+#   extract2(1)
+#  
+#   test <- . %>% 
+#     is_greater_than(quant)
+#   
+#   .[test(.)]
+#     
+# }
+# 
+# is.out(rnorm(30))
 
 ```
 
