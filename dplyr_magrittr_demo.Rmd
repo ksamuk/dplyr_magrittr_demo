@@ -267,23 +267,3 @@ gm_pirates %>%
 
 ```
 
-
-```{r}
-
-is.out <- . %>% {
-  quant <- . %>% 
-  quantile(
-    na.rm = TRUE,
-    probs = 0.95) %>% 
-  extract2(1)
- 
-  test <- . %>% 
-    is_greater_than(quant)
-  
-  .[test(.)]
-    
-}
-
-is.out(rnorm(30))
-```
-
